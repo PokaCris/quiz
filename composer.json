@@ -1,8 +1,8 @@
 {
-    "name": "zver/quiz",
+    "name": "cris/quiz",
     "autoload": {
         "psr-4": {
-            "Zver\\Quiz\\": "src/"
+            "Cris\\Quiz\\": "src/"
         }
     },
     "require": {}
