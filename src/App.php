@@ -9,22 +9,22 @@ class App {
 
         public function run() {
                 header('Content-type: application/json');
-                $conn = newPDO(
-                        'mysql:host=db;db_name=app_db', 
+                $conn = new PDO(
+                        'mysql:host=db;dbname=app_db', 
                         'app_user', 
                         'app_password',
                         [
-                                PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOS,
-                                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXPECTION
+                                PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+                                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
                         ]
                 );
                 $response = $conn->query(
                 <<<SQL
                 SELECT * FROM questions
                 LEFT JOIN answers
-                WHERE answers.question_id = question_id
+                ON answers.question_id = question_id
 SQL
                 );
-                echo json_encode($responce);
+                echo json_encode($response);
         }      
 }
