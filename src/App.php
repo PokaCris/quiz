@@ -3,6 +3,7 @@
 namespace Cris\Quiz;
 
 use PDO;
+use Cris\Quiz\models\Question;
 
 class App {
         public function __construct() {}
@@ -20,11 +21,19 @@ class App {
                 );
                 $response = $conn->query(
                 <<<SQL
-                SELECT * FROM questions
+                SELECT questions.id, questions.question
+                FROM questions 
                 LEFT JOIN answers
                 ON answers.question_id = questions.id
 SQL
                 );
-                echo json_encode($response->fetchAll());
+                // echo json_encode($response->fetchAll());
+
+                $questions = [];
+                $questions = $response->fetchAll(
+                        PDO::FETCH_CLASS,
+                        Question::class
+                ); 
+                echo json_encode($questions);
         }      
 }
