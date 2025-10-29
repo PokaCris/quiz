@@ -22,9 +22,9 @@ class App {
                 <<<SQL
                 SELECT * FROM questions
                 LEFT JOIN answers
-                ON answers.question_id = question_id
+                ON answers.question_id = questions.id
 SQL
                 );
-                echo json_encode($response);
+                echo json_encode($response->fetchAll());
         }      
 }

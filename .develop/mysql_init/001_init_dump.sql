@@ -10,7 +10,7 @@ CREATE TABLE questions (
     id int NOT NULL AUTO_INCREMENT,
     question text NOT NULL,
     PRIMARY KEY (id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHAR SET utf8mb4 COLLATE utf8mb4_0900_ai_ci;
 
 CREATE TABLE answers (
     id int NOT NULL AUTO_INCREMENT,
@@ -19,7 +19,7 @@ CREATE TABLE answers (
     is_correct tinyint(1) NOT NULL,
     PRIMARY KEY (id),
     FOREIGN KEY (question_id) REFERENCES questions(id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHAR SET utf8mb4 COLLATE utf8mb4_0900_ai_ci;
 
 INSERT INTO questions (id, question) VALUES
 (1, 'Какое дерево становится мокрым после дождя?'),
