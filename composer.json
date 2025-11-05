@@ -1,9 +1,0 @@
-{
-    "name": "cris/quiz",
-    "autoload": {
-        "psr-4": {
-            "Cris\\Quiz\\": "src/"
-        }
-    },
-    "require": {}
-}

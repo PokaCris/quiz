@@ -11,9 +11,10 @@ services:
 
   php-fpm:
     build: .
-    image: php:8.1.33-fpm
+    container_name: laravel
+    image: php:8.2.29-fpm
     volumes: 
-      - ./src:/app/src
+      - ./backend:/app
     networks: 
       - quiz-network
 
@@ -26,7 +27,7 @@ services:
       MYSQL_PASSWORD: app_password
     volumes:
       - mysql_data:/var/lib/mysql
-      - ./.develop/mysql_init:/docker-entrypoint-initdb.d
+      # - ./.develop/mysql_init:/docker-entrypoint-initdb.d
     ports:
       - "3306:3306"
     networks:
