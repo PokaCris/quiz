@@ -32,7 +32,7 @@ CREATE TABLE questions (
     id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     question_text VARCHAR(255) NOT NULL UNIQUE,
     category_id INT,
-    FOREIGN KEY (category_id) REFERENCES categories(id),
+    FOREIGN KEY (category_id) REFERENCES categories(id)
 );
 
 CREATE TABLE question_options (
@@ -40,7 +40,7 @@ CREATE TABLE question_options (
     option_text VARCHAR(255) NOT NULL,
     is_correct BOOLEAN NOT NULL DEFAULT FALSE,
     question_id INT,
-    FOREIGN KEY (question_id) REFERENCES questions(id),
+    FOREIGN KEY (question_id) REFERENCES questions(id)
 );
 
 CREATE TABLE user_answers (
@@ -49,7 +49,7 @@ CREATE TABLE user_answers (
     option_id INT NOT NULL,
     PRIMARY KEY (user_id, question_id),
     FOREIGN KEY (user_id) REFERENCES users(id),
-    FOREIGN KEY (question_id) REFERENCES question(id),
+    FOREIGN KEY (question_id) REFERENCES questions(id),
     FOREIGN KEY (option_id) REFERENCES question_options(id)
 );
 
@@ -57,25 +57,49 @@ CREATE VIEW test_results AS
 SELECT 
     u.id AS user_id,
     u.username,
-    g.group_name,
     c.id AS category_id,
     c.category_name,
-    COUNT(q.question_id) question_answered,
-    SUM(IF qo.is_correct, 1, 0) AS scores,
+    COUNT(q.id) question_answered,
+    SUM(qo.is_correct) AS scores,
     ROUND(
         IF(
-            question_answered,
-            scores * 100.0 / question_answered,
+            COUNT(q.id) > 0,
+            SUM(qo.is_correct) * 100.0 / COUNT(q.id),
             0
         )
     , 2) AS succes_rate
-FROM user u,
-CROSS JOIN categories c, 
-LEFT JOIN question q ON c.id = q.category_id,
-LEFT JOIN user_answers ua ON u.id = ua.user_id AND q.id = ua.question_id
-LEFT JOIN question_options qo ON ua.option_id = qo.question_id
-GROUP BY user.id, u.username, category_id, category_name
-HAVING question_answered > 0;
+FROM users u
+CROSS JOIN categories c
+INNER JOIN questions q ON c.id = q.category_id
+INNER JOIN user_answers ua ON u.id = ua.user_id AND q.id = ua.question_id
+INNER JOIN question_options qo ON ua.option_id = qo.id
+GROUP BY u.id, u.username, category_id, category_name;
+
+
+DELIMITER //
+CREATE PROCEDURE get_question_by_number(IN category_id_param INT, IN question_num INT)
+READS SQL DATA
+DETERMINISTIC 
+BEGIN
+    WITH numbered_questions AS (
+        SELECT 
+            id,
+            question_text,
+            category_id,
+            ROW_NUMBER() OVER (ORDER BY id) AS row_num
+        FROM questions
+        WHERE category_id = category_id_param
+    ) SELECT
+        q.id AS question_id,
+        q.question_text,
+        qo.id AS option_id,
+        qo.option_text
+    FROM numbered_questions q
+    INNER JOIN question_options qo ON q.id = qo.question_id
+    WHERE q.row_num = question_num
+    ORDER BY qo.id;
+END//
+DELIMITER ;
  
 
 -- CREATE TABLE questions (
