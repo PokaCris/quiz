@@ -10,6 +10,8 @@ class QuizController extends Controller
 {
     public function getQuestionByNumber(Request $request, $categoryID, $questionNumber): JsonResponse
     {
+        $categoryID = $request->query('category');
+        $questionNumber = $request->query('number');
         $options = DB::select('CALL get_question_by_number(?, ?)', [$categoryID, $questionNumber]);
 
         $question = [
