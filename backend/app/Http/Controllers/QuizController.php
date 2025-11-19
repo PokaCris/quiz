@@ -14,7 +14,10 @@ class QuizController extends Controller
         $questionNumber = $request->query('number');
         $options = DB::select('CALL get_question_by_number(?, ?)', [$categoryID, $questionNumber]);
 
-        $question = [
+        if (count($options) == 0) {
+            $question = [];
+        } else {
+            $question = [
             'questionID' => $options[0]->question_id,
             'questionText' => $options[0]->question_text,
             'options' => array_map(fn ($option) => [
@@ -22,6 +25,8 @@ class QuizController extends Controller
                 'optionText' => $option->option_text
             ], $options)
         ];
+        };
+
 
         return response()->json([
             'question' => $question
