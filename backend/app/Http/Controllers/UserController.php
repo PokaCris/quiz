@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\User;
-use \Illuminate\Http\JsonResponse;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
@@ -18,8 +18,8 @@ class UserController extends Controller
     public function store(Request $request): JsonResponse
     {
         $validator = Validator::make($request->all(), [
-            'username' => 'required|unique:user',
-            'email' => 'email|required|unique:user',
+            'username' => 'required|unique:users',
+            'email' => 'email|required|unique:users',
             'password' => 'required'
         ]);
 
